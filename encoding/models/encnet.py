@@ -50,7 +50,7 @@ class EncModule(nn.Module):
             norm_layer(in_channels),
             nn.ReLU(inplace=True),
             encoding.nn.Encoding(D=in_channels, K=ncodes),
-            encoding.nn.BatchNorm1d(ncodes),
+            nn.BatchNorm1d(ncodes),
             nn.ReLU(inplace=True),
             encoding.nn.Mean(dim=1))
         self.fc = nn.Sequential(

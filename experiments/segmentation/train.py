@@ -51,7 +51,7 @@ class Trainer():
         model = get_segmentation_model(args.model, dataset = args.dataset,
                                        backbone = args.backbone, dilated = args.dilated,
                                        lateral = args.lateral, jpu = args.jpu, aux = args.aux,
-                                       se_loss = args.se_loss, norm_layer = BatchNorm2d,
+                                       se_loss = args.se_loss, norm_layer = torch.nn.BatchNorm2d,
                                        base_size = args.base_size, crop_size = args.crop_size)
         print(model)
         # optimizer using different LR
@@ -66,7 +66,7 @@ class Trainer():
             momentum=args.momentum, weight_decay=args.weight_decay)
         # criterions
         self.criterion = SegmentationLosses(se_loss=args.se_loss, aux=args.aux,
-                                            nclass=self.nclass, 
+                                            nclass=self.nclass,
                                             se_weight=args.se_weight,
                                             aux_weight=args.aux_weight)
         self.model, self.optimizer = model, optimizer
@@ -108,7 +108,7 @@ class Trainer():
                 image = Variable(image)
                 target = Variable(target)
             outputs = self.model(image)
-            loss = self.criterion(outputs, target)
+            loss = self.criterion(*outputs, target)
             loss.backward()
             self.optimizer.step()
             train_loss += loss.item()
@@ -129,7 +129,6 @@ class Trainer():
         # Fast test during the training
         def eval_batch(model, image, target):
             outputs = model(image)
-            outputs = gather(outputs, 0, dim=0)
             pred = outputs[0]
             target = target.cuda()
             correct, labeled = utils.batch_pix_accuracy(pred.data, target)
