@@ -28,11 +28,10 @@ class VOTTSegmentation(BaseDataset):
         # self.assets = [asset for asset in self.json['assets'].values() if len(asset['regions']) > 0]
 
         # 10分の1はvalidation用
-        val = len(self.assets) // 10
         if self.mode == 'train':
-            self.assets = self.assets[0:-val]
+            self.assets = [a for i,a in enumerate(self.assets) if i % 10 != 0]
         else:
-            self.assets = self.assets[-val:]
+            self.assets = [a for i,a in enumerate(self.assets) if i % 10 == 0]
 
     def __getitem__(self, index):
         asset = self.assets[index]
