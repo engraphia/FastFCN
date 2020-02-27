@@ -88,10 +88,10 @@ class VOTTSegmentation(BaseDataset):
         regions = sorted(regions, key = lambda region: self.tags.index(region['tags'][0]))
         for i, region in enumerate(regions):
             # 1領域1タグ前提。
-            if len(region['tags']) != 1:
-                print(mask_path)
-                print("too many tags annotated into single region:")
-                print(region['tags'])
+            # if len(region['tags']) != 1:
+            #     print(mask_path)
+            #     print("too many tags annotated into single region:")
+            #     print(region['tags'])
             palette_index = self.tags.index(region['tags'][0])
 
             drawer.polygon(
